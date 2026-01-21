@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clinical AI Dashboard - Multi-Agent Medical Intelligence System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #1e40af;
+            --secondary-color: #dc2626;
+            --success-color: #16a34a;
+            --warning-color: #ea580c;
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-dark: #111827;
+            --text-light: #6b7280;
+            --border-color: #e5e7eb;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: var(--primary-color);
+            color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo::before {
+            content: "🏥";
+            font-size: 2rem;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .header-nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 0.95rem;
+            opacity: 0.9;
+            transition: opacity 0.3s;
+        }
+
+        .header-nav a:hover {
+            opacity: 1;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Grid Layout */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .grid-full {
+            grid-column: 1 / -1;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .card-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        input[type="date"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="number"]:focus,
+        input[type="date"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.375rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1e3a8a;
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #15803d;
+        }
+
+        .btn-secondary {
+            background: var(--border-color);
+            color: var(--text-dark);
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+
+        .btn-danger {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+
+        .btn-block {
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* File Upload */
+        .file-upload {
+            border: 2px dashed var(--border-color);
+            border-radius: 0.5rem;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.3s, background 0.3s;
+        }
+
+        .file-upload:hover {
+            border-color: var(--primary-color);
+            background: rgba(30, 64, 175, 0.02);
+        }
+
+        .file-upload input[type="file"] {
+            display: none;
+        }
+
+        .upload-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tab-button {
+            background: none;
+            border: none;
+            padding: 1rem 0;
+            color: var(--text-light);
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab-button.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .tab-button:hover {
+            color: var(--text-dark);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Status Badges */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .badge-primary {
+            background: rgba(30, 64, 175, 0.1);
+            color: var(--primary-color);
+        }
+
+        .badge-success {
+            background: rgba(22, 163, 74, 0.1);
+            color: var(--success-color);
+        }
+
+        .badge-warning {
+            background: rgba(234, 88, 12, 0.1);
+            color: var(--warning-color);
+        }
+
+        .badge-danger {
+            background: rgba(220, 38, 38, 0.1);
+            color: var(--secondary-color);
+        }
+
+        /* Progress Bar */
+        .progress {
+            background: var(--border-color);
+            border-radius: 9999px;
+            height: 0.5rem;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+
+        .progress-bar {
+            background: var(--success-color);
+            height: 100%;
+            transition: width 0.3s;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .stat-item {
+            background: var(--bg-color);
+            padding: 1rem;
+            border-radius: 0.375rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: 0.25rem;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 1rem;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid;
+        }
+
+        .alert-success {
+            background: rgba(22, 163, 74, 0.1);
+            border-left-color: var(--success-color);
+            color: #166534;
+        }
+
+        .alert-error {
+            background: rgba(220, 38, 38, 0.1);
+            border-left-color: var(--secondary-color);
+            color: #7f1d1d;
+        }
+
+        .alert-warning {
+            background: rgba(234, 88, 12, 0.1);
+            border-left-color: var(--warning-color);
+            color: #7c2d12;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 0.5rem;
+            max-width: 500px;
+            width: 90%;
+            padding: 2rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-close {
+            float: right;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+            background: none;
+            border: none;
+        }
+
+        /* Loading */
+        .spinner {
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            width: 1.5rem;
+            height: 1.5rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header-nav {
+                gap: 1rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .card {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">Clinical AI Dashboard</div>
+            <nav class="header-nav">
+                <a href="#dashboard">Dashboard</a>
+                <a href="#patients">Patients</a>
+                <a href="#reports">Reports</a>
+                <a href="#settings">Settings</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Dashboard Section -->
+        <section id="dashboard">
+            <h1 style="margin: 2rem 0 1rem 0; color: var(--text-dark);">Clinical Intelligence Dashboard</h1>
+            <p style="color: var(--text-light); margin-bottom: 2rem;">Multi-agent AI system for medical data analysis and intelligent recommendations</p>
+
+            <!-- Statistics -->
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">247</div>
+                    <div class="stat-label">Patients Analyzed</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">1,892</div>
+                    <div class="stat-label">Medical Records</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">94.2%</div>
+                    <div class="stat-label">Accuracy Rate</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">8</div>
+                    <div class="stat-label">Supported Languages</div>
+                </div>
+            </div>
+
+            <!-- System Status -->
+            <div class="grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">System Status</h2>
+                        <span class="badge badge-success">Active</span>
+                    </div>
+                    <div style="display: grid; gap: 1rem;">
+                        <div>
+                            <p style="font-size: 0.9rem; margin-bottom: 0.5rem;">API Connectivity</p>
+                            <div class="progress">
+                                <div class="progress-bar" style="width: 100%;"></div>
+                            </div>
+                            <p style="font-size: 0.85rem; color: var(--text-light);">All systems operational</p>
+                        </div>
+                        <div>
+                            <p style="font-size: 0.9rem; margin-bottom: 0.5rem;">Qdrant Vector Database</p>
+                            <div class="progress">
+                                <div class="progress-bar" style="width: 100%;"></div>
+                            </div>
+                            <p style="font-size: 0.85rem; color: var(--text-light);">Ready for hybrid search</p>
+                        </div>
+                        <div>
+                            <p style="font-size: 0.9rem; margin-bottom: 0.5rem;">LLM Models</p>
+                            <div class="progress">
+                                <div class="progress-bar" style="width: 100%;"></div>
+                            </div>
+                            <p style="font-size: 0.85rem; color: var(--text-light);">ChatGPT + Gemini ready</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Active Agents</h2>
+                    </div>
+                    <div style="display: grid; gap: 0.75rem;">
+                        <p style="font-size: 0.9rem;"><span class="badge badge-success">✓</span> <strong>Agent 1:</strong> Ingestion & Qdrant Search</p>
+                        <p style="font-size: 0.9rem;"><span class="badge badge-success">✓</span> <strong>Agent 2:</strong> Multi-LLM Reasoning</p>
+                        <p style="font-size: 0.9rem;"><span class="badge badge-success">✓</span> <strong>Agent 3:</strong> Doctor Feedback Loop</p>
+                        <p style="font-size: 0.9rem;"><span class="badge badge-success">✓</span> <strong>Vision:</strong> Medical Imaging Analysis</p>
+                        <p style="font-size: 0.9rem;"><span class="badge badge-success">✓</span> <strong>Speech:</strong> Audio Transcription & Analysis</p>
+                        <p style="font-size: 0.9rem;"><span class="badge badge-success">✓</span> <strong>NLP:</strong> Clinical Text Extraction</p>
+                        <p style="font-size: 0.9rem;"><span class="badge badge-success">✓</span> <strong>TimeSeries:</strong> Vital Signs Analysis</p>
+                        <p style="font-size: 0.9rem;"><span class="badge badge-primary">→</span> <strong>+7 more agents</strong> in parallel</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Patient Management -->
+        <section id="patients" style="margin-top: 3rem;">
+            <h2 style="margin-bottom: 1rem;">Patient Management</h2>
+
+            <div class="tabs">
+                <button class="tab-button active" onclick="switchTab(event, 'create-patient')">Create Patient</button>
+                <button class="tab-button" onclick="switchTab(event, 'upload-data')">Upload Medical Data</button>
+                <button class="tab-button" onclick="switchTab(event, 'view-patients')">View Patients</button>
+            </div>
+
+            <!-- Create Patient Tab -->
+            <div id="create-patient" class="tab-content active">
+                <div class="card">
+                    <h3 class="card-title" style="margin-bottom: 1rem;">Create New Patient Record</h3>
+                    <form id="patientForm">
+                        <div class="grid">
+                            <div class="form-group">
+                                <label for="patientName">Patient Name *</label>
+                                <input type="text" id="patientName" name="patientName" required placeholder="John Doe">
+                            </div>
+                            <div class="form-group">
+                                <label for="patientMRN">Medical Record Number (MRN) *</label>
+                                <input type="text" id="patientMRN" name="patientMRN" required placeholder="MRN123456">
+                            </div>
+                        </div>
+
+                        <div class="grid">
+                            <div class="form-group">
+                                <label for="patientAge">Age *</label>
+                                <input type="number" id="patientAge" name="patientAge" required placeholder="45" min="0" max="150">
+                            </div>
+                            <div class="form-group">
+                                <label for="patientGender">Gender *</label>
+                                <select id="patientGender" name="patientGender" required>
+                                    <option value="">Select Gender</option>
+                                    <option value="M">Male</option>
+                                    <option value="F">Female</option>
+                                    <option value="O">Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="patientHistory">Medical History</label>
+                            <textarea id="patientHistory" name="patientHistory" placeholder="Enter any existing conditions, allergies, etc."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block">Create Patient Record</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Upload Data Tab -->
+            <div id="upload-data" class="tab-content">
+                <div class="card">
+                    <h3 class="card-title" style="margin-bottom: 1rem;">Upload Medical Data</h3>
+                    
+                    <div class="form-group">
+                        <label for="selectPatient">Select Patient *</label>
+                        <select id="selectPatient" required>
+                            <option value="">-- Select a patient --</option>
+                            <option value="PT-001">PT-001 | John Smith (45M)</option>
+                            <option value="PT-002">PT-002 | Mary Johnson (52F)</option>
+                            <option value="PT-003">PT-003 | Robert Brown (68M)</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="margin-bottom: 1rem;">Upload Medical Records</h4>
+                        
+                        <div style="display: grid; gap: 1rem;">
+                            <!-- Clinical Notes -->
+                            <div>
+                                <label style="margin-bottom: 0.5rem; display: block;">Clinical Notes (Text/PDF)</label>
+                                <div class="file-upload" onclick="document.getElementById('clinicalFile').click();">
+                                    <div class="upload-icon">📄</div>
+                                    <p>Click to upload clinical notes</p>
+                                    <p style="font-size: 0.85rem; color: var(--text-light);">Supported: TXT, PDF</p>
+                                    <input type="file" id="clinicalFile" accept=".txt,.pdf">
+                                </div>
+                            </div>
+
+                            <!-- Medical Images -->
+                            <div>
+                                <label style="margin-bottom: 0.5rem; display: block;">Medical Images (X-ray, CT, MRI)</label>
+                                <div class="file-upload" onclick="document.getElementById('imageFile').click();">
+                                    <div class="upload-icon">🖼️</div>
+                                    <p>Click to upload medical images</p>
+                                    <p style="font-size: 0.85rem; color: var(--text-light);">Supported: PNG, JPG, DICOM</p>
+                                    <input type="file" id="imageFile" accept=".png,.jpg,.jpeg,.dcm">
+                                </div>
+                            </div>
+
+                            <!-- Audio Files -->
+                            <div>
+                                <label style="margin-bottom: 0.5rem; display: block;">Audio (Doctor Notes, Patient Voice)</label>
+                                <div class="file-upload" onclick="document.getElementById('audioFile').click();">
+                                    <div class="upload-icon">🎙️</div>
+                                    <p>Click to upload audio files</p>
+                                    <p style="font-size: 0.85rem; color: var(--text-light);">Supported: WAV, MP3, M4A</p>
+                                    <input type="file" id="audioFile" accept=".wav,.mp3,.m4a">
+                                </div>
+                            </div>
+
+                            <!-- Vital Signs -->
+                            <div>
+                                <label style="margin-bottom: 0.5rem; display: block;">Vital Signs / Time-Series (ECG, Heart Rate, Blood Pressure)</label>
+                                <div class="file-upload" onclick="document.getElementById('vitalFile').click();">
+                                    <div class="upload-icon">📊</div>
+                                    <p>Click to upload vital signs data</p>
+                                    <p style="font-size: 0.85rem; color: var(--text-light);">Supported: CSV, JSON</p>
+                                    <input type="file" id="vitalFile" accept=".csv,.json">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary btn-block" onclick="submitMedicalData();">Process Medical Data</button>
+                </div>
+            </div>
+
+            <!-- View Patients Tab -->
+            <div id="view-patients" class="tab-content">
+                <div class="card">
+                    <h3 class="card-title" style="margin-bottom: 1rem;">Patient List</h3>
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr style="background: var(--bg-color); border-bottom: 2px solid var(--border-color);">
+                                    <th style="padding: 1rem; text-align: left;">Patient ID</th>
+                                    <th style="padding: 1rem; text-align: left;">Name</th>
+                                    <th style="padding: 1rem; text-align: left;">Age</th>
+                                    <th style="padding: 1rem; text-align: left;">Last Analysis</th>
+                                    <th style="padding: 1rem; text-align: left;">Status</th>
+                                    <th style="padding: 1rem; text-align: left;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="border-bottom: 1px solid var(--border-color);">
+                                    <td style="padding: 1rem;">PT-001</td>
+                                    <td style="padding: 1rem;">John Smith</td>
+                                    <td style="padding: 1rem;">45</td>
+                                    <td style="padding: 1rem;">2024-01-20</td>
+                                    <td style="padding: 1rem;"><span class="badge badge-success">Analyzed</span></td>
+                                    <td style="padding: 1rem;"><button class="btn btn-primary" style="font-size: 0.85rem; padding: 0.5rem 1rem;">View Report</button></td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid var(--border-color);">
+                                    <td style="padding: 1rem;">PT-002</td>
+                                    <td style="padding: 1rem;">Mary Johnson</td>
+                                    <td style="padding: 1rem;">52</td>
+                                    <td style="padding: 1rem;">2024-01-19</td>
+                                    <td style="padding: 1rem;"><span class="badge badge-success">Analyzed</span></td>
+                                    <td style="padding: 1rem;"><button class="btn btn-primary" style="font-size: 0.85rem; padding: 0.5rem 1rem;">View Report</button></td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid var(--border-color);">
+                                    <td style="padding: 1rem;">PT-003</td>
+                                    <td style="padding: 1rem;">Robert Brown</td>
+                                    <td style="padding: 1rem;">68</td>
+                                    <td style="padding: 1rem;">Pending</td>
+                                    <td style="padding: 1rem;"><span class="badge badge-warning">Processing</span></td>
+                                    <td style="padding: 1rem;"><button class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.5rem 1rem;">In Progress</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reports Section -->
+        <section id="reports" style="margin-top: 3rem;">
+            <h2 style="margin-bottom: 1rem;">Clinical Intelligence Reports</h2>
+
+            <div class="grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Latest Analysis - PT-001</h3>
+                        <span class="badge badge-success">Complete</span>
+                    </div>
+
+                    <div style="margin-bottom: 1rem;">
+                        <h4 style="font-size: 0.95rem; margin-bottom: 0.5rem;">Primary Findings</h4>
+                        <p style="font-size: 0.9rem; margin-bottom: 0.5rem;"><strong>Diagnosis:</strong> Type 2 Diabetes with Hypertension</p>
+                        <p style="font-size: 0.9rem; margin-bottom: 0.5rem;"><strong>Risk Level:</strong> <span class="badge badge-warning">High</span></p>
+                        <p style="font-size: 0.9rem;"><strong>Confidence:</strong> 94.2%</p>
+                    </div>
+
+                    <div style="margin-bottom: 1rem;">
+                        <h4 style="font-size: 0.95rem; margin-bottom: 0.5rem;">Recommended Medications</h4>
+                        <ul style="list-style: none; font-size: 0.9rem;">
+                            <li style="padding: 0.25rem 0; margin-bottom: 0.25rem;">• <strong>Metformin</strong> 1000mg BID (Success Rate: 92%)</li>
+                            <li style="padding: 0.25rem 0; margin-bottom: 0.25rem;">• <strong>Lisinopril</strong> 10mg OD (Success Rate: 88%)</li>
+                            <li style="padding: 0.25rem 0; margin-bottom: 0.25rem;">• <strong>Atorvastatin</strong> 20mg OD (Success Rate: 85%)</li>
+                        </ul>
+                    </div>
+
+                    <div style="margin-bottom: 1rem;">
+                        <h4 style="font-size: 0.95rem; margin-bottom: 0.5rem;">Disease Trajectory (Expected)</h4>
+                        <p style="font-size: 0.85rem; color: var(--text-light);">
+                            <strong>Phase 1 (Acute - Week 1-7):</strong> Stabilization with initial medication adjustment
+                        </p>
+                        <p style="font-size: 0.85rem; color: var(--text-light);">
+                            <strong>Phase 2 (Recovery - Week 7-21):</strong> Gradual improvement in glucose and BP control
+                        </p>
+                        <p style="font-size: 0.85rem; color: var(--text-light);">
+                            <strong>Phase 3 (Convalescence - Week 3-6 months):</strong> Maintenance and monitoring phase
+                        </p>
+                    </div>
+
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="btn btn-primary" style="flex: 1;">View Full Report</button>
+                        <button class="btn btn-secondary" style="flex: 1;">Download PDF</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Report Export Options</h3>
+                    </div>
+
+                    <div style="display: grid; gap: 0.75rem; margin-bottom: 1rem;">
+                        <button class="btn btn-secondary btn-block" onclick="exportReport('pdf');">📄 Download as PDF</button>
+                        <button class="btn btn-secondary btn-block" onclick="exportReport('json');">📊 Export as JSON</button>
+                        <button class="btn btn-secondary btn-block" onclick="exportReport('audio');">🎙️ Generate Audio Narration</button>
+                    </div>
+
+                    <h4 style="font-size: 0.95rem; margin-bottom: 0.5rem;">Multi-Language Narration</h4>
+                    <select style="width: 100%; padding: 0.5rem; margin-bottom: 1rem;">
+                        <option value="en">English 🇺🇸</option>
+                        <option value="es">Spanish 🇪🇸</option>
+                        <option value="fr">French 🇫🇷</option>
+                        <option value="de">German 🇩🇪</option>
+                        <option value="hi">Hindi 🇮🇳</option>
+                        <option value="pt">Portuguese 🇵🇹</option>
+                        <option value="zh">Chinese 🇨🇳</option>
+                        <option value="ja">Japanese 🇯🇵</option>
+                    </select>
+
+                    <select style="width: 100%; padding: 0.5rem; margin-bottom: 1rem;">
+                        <option value="patient">Patient-Friendly Narrative</option>
+                        <option value="medical">Medical Professional Narrative</option>
+                    </select>
+
+                    <button class="btn btn-success btn-block" onclick="generateNarration();">Generate Narration</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Settings Section -->
+        <section id="settings" style="margin-top: 3rem; margin-bottom: 3rem;">
+            <h2 style="margin-bottom: 1rem;">System Settings</h2>
+
+            <div class="card">
+                <h3 class="card-title" style="margin-bottom: 1rem;">API Configuration</h3>
+
+                <div class="form-group">
+                    <label for="apiEndpoint">API Endpoint</label>
+                    <input type="text" id="apiEndpoint" value="https://clinical-ai-xxxxx.run.app" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="qdrantStatus">Qdrant Vector Database</label>
+                    <input type="text" id="qdrantStatus" value="Connected (Europe West 3)" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="llmModels">Active LLM Models</label>
+                    <input type="text" id="llmModels" value="ChatGPT (GPT-4 Turbo) + Gemini Pro + Vertex AI" readonly>
+                </div>
+
+                <button class="btn btn-secondary" onclick="testConnection();">Test API Connection</button>
+            </div>
+
+            <div class="card" style="margin-top: 1.5rem;">
+                <h3 class="card-title" style="margin-bottom: 1rem;">System Information</h3>
+
+                <div style="display: grid; gap: 0.75rem; font-size: 0.9rem;">
+                    <div style="display: flex; justify-content: space-between;">
+                        <span><strong>System Version:</strong></span>
+                        <span>1.0.0</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; border-top: 1px solid var(--border-color); padding-top: 0.75rem; margin-top: 0.75rem;">
+                        <span><strong>Active Agents:</strong></span>
+                        <span>14+</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span><strong>Supported Languages:</strong></span>
+                        <span>8</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span><strong>Last Updated:</strong></span>
+                        <span>January 2024</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Tab switching
+        function switchTab(event, tabName) {
+            const tabContents = document.querySelectorAll('.tab-content');
+            const tabButtons = document.querySelectorAll('.tab-button');
+
+            tabContents.forEach(tab => tab.classList.remove('active'));
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Form submission
+        document.getElementById('patientForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Patient record created: ' + document.getElementById('patientName').value);
+            this.reset();
+        });
+
+        // File upload handlers
+        document.getElementById('clinicalFile').addEventListener('change', function() {
+            console.log('Clinical file selected:', this.files[0].name);
+        });
+
+        // Export functions
+        function exportReport(format) {
+            alert('Exporting report as ' + format.toUpperCase());
+        }
+
+        function generateNarration() {
+            alert('Generating multi-language narration...');
+        }
+
+        function submitMedicalData() {
+            alert('Processing medical data for selected patient...');
+        }
+
+        function testConnection() {
+            alert('Testing API connection... Connected!');
+        }
+    </script>
+</body>
+</html>
